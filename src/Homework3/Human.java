@@ -1,9 +1,8 @@
 package Homework3;
 
 import javax.lang.model.element.NestingKind;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.InputMismatchException;
 
@@ -42,22 +41,6 @@ public class Human {
         return sex;
     }
 
-    public void setterHuman (String some, int i) throws UnCorrectDateFormat {
-        switch (i) {
-            case 0:
-                setSurname(some);
-            case 1:
-                setName(some);
-            case 2:
-                setPatronymic(some);
-            case 3:
-                setBirthday(some);
-            case 4:
-                setPhone(some);
-            case 5:
-                setSex(some);
-        }
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -85,16 +68,43 @@ public class Human {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        CharacterIterator it = new StringCharacterIterator(phone);
+        String str = null;
+        try {
+            while (it.current() != CharacterIterator.DONE) {
+                str = String.valueOf(it.current());
+                int a = Integer.parseInt(str);
+                it.next();
+            }
+            this.phone = phone;
+        } catch (Exception e) {
+            try {
+                throw new ParseException("Мы не моежм преобразовать этот символ в число: " + str, it.getIndex());
+            } catch (Exception ex) {
+                System.err.println(ex.getMessage());
+                this.phone = null;
+            }
+        }
     }
 
     public void setSex(String sex) {
-        this.sex = sex;
+        int a = sex.length();
+        if (a != 1) {
+            System.err.println("Пол введён некооректно. Запись отклонена. ");
+            this.sex = null;
+        } else {
+            if (sex.equals("m") || sex.equals("f")) {
+                this.sex = sex;
+            } else {
+                System.err.println("Пол введён некорректно.. ");
+                this.sex = null;
+            }
+        }
     }
 
     @Override
     public String toString() {
         return surname + " " + name + " " + patronymic + " " +
-                birthday + " " + phone + " " + sex;
+                birthday + " " + phone + " " + sex + "\n";
     }
 }
